@@ -1,0 +1,11 @@
+{
+  "name": "alpar-rp-website",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "check": "node --check script.js && node --check server.js",
+    "serve": "node server.js"
+  }
+}
