@@ -113,13 +113,7 @@
   };
 
   if (window.location.protocol === 'file:') {
-    setProgress(0);
-    setStatus('Inditsd HTTP szerverrol: http://localhost:3000');
-    announceMapState('error', { reason: 'file-protocol' });
-    if (loaderPanel) {
-      loaderPanel.classList.add('is-error');
-      loaderPanel.innerHTML = '<span>3D MAP BLOKKOLVA</span><b>HTTP kell</b><small>Ne file:/// modban nyisd meg. Futtasd: npm start</small>';
-    }
+    window.location.replace('http://localhost:3000/map.html');
     return;
   }
 
@@ -666,6 +660,80 @@
     controls.update();
   };
 
+  const zoomView = direction => {
+    if (!camera || !controls) return;
+    const offset = camera.position.clone().sub(controls.target);
+    const factor = direction > 0 ? .78 : 1.28;
+    const nextDistance = Math.max(controls.minDistance, Math.min(controls.maxDistance, offset.length() * factor));
+    offset.setLength(nextDistance);
+    camera.position.copy(controls.target).add(offset);
+    controls.update();
+  };
+
+  const bindMapInterface = () => {
+    const radiusInput = document.getElementById('policeRadius');
+    const radiusOutput = document.getElementById('policeRadiusValue');
+    const updateCoordinates = point => {
+      ['X', 'Y', 'Z'].forEach(axis => {
+        const node = document.getElementById(`map${axis}`);
+        const value = point && point[axis.toLowerCase()];
+        if (node && Number.isFinite(value)) node.textContent = Math.round(value);
+      });
+    };
+
+    document.querySelectorAll('.map-preset').forEach(button => {
+      button.addEventListener('click', () => {
+        document.querySelectorAll('.map-preset').forEach(item => item.classList.remove('is-active'));
+        button.classList.add('is-active');
+        const point = { x: Number(button.dataset.x), y: Number(button.dataset.y), z: Number(button.dataset.z) };
+        focusToWorld(point);
+        updateCoordinates(point);
+      });
+    });
+    document.getElementById('mapZoomIn')?.addEventListener('click', () => zoomView(1));
+    document.getElementById('mapZoomOut')?.addEventListener('click', () => zoomView(-1));
+    document.getElementById('mapReset')?.addEventListener('click', () => {
+      resetView();
+      updateCoordinates({ x: 0, y: 0, z: 0 });
+      document.querySelectorAll('.map-preset').forEach((item, index) => item.classList.toggle('is-active', index === 0));
+    });
+    radiusInput?.addEventListener('input', () => {
+      const radius = Number(radiusInput.value);
+      if (radiusOutput) radiusOutput.textContent = `${radius} m`;
+      setPoliceZoneRadius(radius);
+    });
+    document.getElementById('mapPoliceZone')?.addEventListener('click', () => {
+      const point = hoveredPoint || selectedPoint || { x: 447, y: -991, z: 78 };
+      setSelectedPoint(point, { radius: Number(radiusInput?.value || policeZoneRadius) });
+      updateCoordinates(point);
+      setStatus('Lezárási zóna kijelölve');
+    });
+    document.getElementById('mapFullscreen')?.addEventListener('click', async () => {
+      try {
+        if (!document.fullscreenElement) await document.documentElement.requestFullscreen();
+        else await document.exitFullscreen();
+      } catch (_) {
+        setStatus('A teljes képernyős mód nem érhető el');
+      }
+    });
+    window.addEventListener('alpar3d:hover', event => updateCoordinates(event.detail));
+    window.addEventListener('alpar3d:waypoint', event => updateCoordinates(event.detail));
+    const fxCursor = document.getElementById('fxCursor');
+    if (fxCursor && window.matchMedia('(pointer: fine)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      let cursorFrame = 0;
+      document.addEventListener('pointermove', event => {
+        document.documentElement.style.setProperty('--pointer-x', `${event.clientX}px`);
+        document.documentElement.style.setProperty('--pointer-y', `${event.clientY}px`);
+        if (cursorFrame) return;
+        cursorFrame = requestAnimationFrame(() => {
+          cursorFrame = 0;
+          fxCursor.style.transform = `translate3d(${event.clientX}px,${event.clientY}px,0)`;
+        });
+      }, { passive: true });
+      document.addEventListener('pointerover', event => fxCursor.classList.toggle('is-active', Boolean(event.target.closest('button,a,input'))));
+    }
+  };
+
   const resize = () => {
     if (!renderer || !camera) return;
     renderer.setPixelRatio(getPowerProfile().pixelRatio);
@@ -923,4 +991,5 @@
   };
 
   init();
+  bindMapInterface();
 })();

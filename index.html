@@ -1,227 +1,252 @@
-﻿<!DOCTYPE html>
+<!doctype html>
 <html lang="hu">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Alpár RP | FiveM Roleplay Szerver</title>
-  <meta name="description" content="Alpár RP - modern, magyar FiveM roleplay szerver bemutató weboldal." />
+  <script>
+    if (window.location.protocol === 'file:') {
+      window.location.replace('http://localhost:3000/');
+    }
+  </script>
+  <title>Alpár RP | Server Command Center</title>
+  <meta name="description" content="Alpár RP prémium FiveM szervermenedzsment és játékosportál." />
   <link rel="icon" href="Logo.png" type="image/png" />
-  <link rel="preconnect" href="https://wallpapers.com">
-  <link rel="stylesheet" href="style.css" />
+  <link rel="preload" as="image" href="Logo.png" fetchpriority="high" />
+  <link rel="preload" as="image" href="assets/images/fivem-city-hero.webp" fetchpriority="high" />
+  <link rel="preload" as="image" href="assets/images/fivem-operations-bg.webp" />
+  <link rel="preload" as="image" href="assets/images/fivem-garage-bg.webp" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Orbitron:wght@600;700;800;900&display=swap&subset=latin-ext" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=red-command-10" />
 </head>
 <body>
-  <div class="site-loader" id="siteLoader" role="status" aria-live="polite">
-    <div class="loader-bg"></div>
-    <div class="loader-panel">
-      <img src="Logo.png" alt="Alpar RP logo" />
-      <span>ALPAR RP SYSTEM</span>
-      <strong>Betoltes</strong>
-      <div class="loader-bar"><i></i></div>
-    </div>
-  </div>
-  <div class="noise"></div>
-  <div class="cursor-glow" id="cursorGlow"></div>
-  <div class="ambient-bg" id="ambientBg" aria-hidden="true">
-    <div class="ambient-bg-layer is-active"></div>
-    <div class="ambient-bg-layer"></div>
+  <div class="fx-transition" id="fxTransition" aria-hidden="true"><i></i></div>
+  <div class="page-loader" id="pageLoader">
+    <img src="Logo.png" alt="Alpár RP" />
+    <span>ALPÁR RP COMMAND</span>
+    <b>Rendszer betöltése</b>
+    <i></i>
   </div>
 
-  <header class="nav-shell">
-    <nav class="nav glass reveal">
-      <a href="#home" class="brand"><img class="brand-mark" src="Logo.png" alt="Alpar RP logo" /><span>Alpár RP</span></a>
-      <div class="nav-links" id="navLinks">
-        <a href="#about">Bemutató</a>
-        <a href="#features">Rendszerek</a>
-        <a href="map.html">Térkép</a>
-        <a href="#jobs">Frakciók</a>
-        <a href="#rules">Szabályzat</a>
-        <a href="#join">Csatlakozás</a>
-      </div>
-      <button class="menu-btn" id="menuBtn" aria-label="Menü">☰</button>
+  <header class="topbar">
+    <a href="#home" class="brand" data-route="home" aria-label="Alpár RP kezdőlap">
+      <img src="Logo.png" alt="Alpár RP" />
+      <span>ALPÁR</span><small>RP</small>
+    </a>
+    <button class="menu-btn" id="menuBtn" aria-label="Menü"><span></span><span></span><span></span></button>
+    <nav id="mainNav">
+      <button class="active" type="button" data-route="home" data-hud="HQ">Főhadiszállás</button>
+      <button type="button" data-route="server" data-hud="CORE">Szerver Core</button>
+      <button type="button" data-route="character" data-hud="ID">Karakter</button>
+      <button type="button" data-route="social" data-hud="COMMS">Közösség</button>
+      <button type="button" data-route="market" data-hud="MTR">Motorpool</button>
+      <button type="button" data-route="map" data-hud="GPS">Live Atlas</button>
+      <button type="button" data-route="dispatch" data-hud="911">Dispatch</button>
+      <button type="button" data-route="admin" data-hud="OS">Admin OS</button>
+      <button type="button" data-route="settings" data-hud="CFG">Beállítások</button>
     </nav>
+    <a class="btn btn-outline desktop-join" href="/auth/discord" id="discordLogin">Discord belépés</a>
   </header>
 
   <main>
-    <section class="hero" id="home">
-      <div class="hero-bg"></div>
-      <div class="orb orb-one"></div>
-      <div class="orb orb-two"></div>
-      <div class="hero-content reveal">
-        <span class="eyebrow">Magyar FiveM Roleplay</span>
-        <h1 class="glitch-title" data-text="Alpár RP">Alpár RP<br><span>ahol a történeted elkezdődik.</span></h1>
-        <p>Egy modern, komoly hangulatú RP szerver látványos városi élettel, egyedi rendszerekkel, aktív közösséggel és erős piros-fekete arculattal.</p>
-        <div class="hero-actions">
-          <a class="btn primary magnetic" href="#join">Csatlakozom</a>
-          <a class="btn ghost magnetic" href="#features">Megnézem a szervert</a>
-        </div>
-        <div class="stats glass">
-          <div><strong data-count="128">0</strong><span>slot</span></div>
-          <div><strong data-count="24">0</strong><span>órás élmény</span></div>
-          <div><strong data-count="60">0</strong><span>FPS-barát</span></div>
-        </div>
-      </div>
-      <div class="hero-card glass reveal delay-1">
-        <div class="window-dots"><i></i><i></i><i></i></div>
-        <img src="https://wallpapers.com/images/hd/fivem-ykcvktraxgpoh1r4.jpg" alt="FiveM roleplay akcio" fetchpriority="high" decoding="async" />
-        <div class="live-box">
-          <span class="pulse"></span>
-          <div><b>Szerver státusz</b><small>Online • whitelist nyitva</small></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="about">
-      <div class="section-head reveal">
-        <span class="eyebrow">Miért Alpár RP?</span>
-        <h2>Nem csak város. Egy játszható élet.</h2>
-        <p>Az oldal szövege direkt bemutató jellegű, később könnyen átírható a pontos IP-re, Discordra, szabályokra és frakciókra.</p>
-      </div>
-      <div class="about-grid">
-        <article class="mac-card glass reveal">
-          <div class="window-dots"><i></i><i></i><i></i></div>
-          <h3>Komoly RP alapok</h3>
-          <p>Tiszta szabályrendszer, karakterközpontú történetek és olyan közösségi élmény, ahol számít, hogyan játszol.</p>
-        </article>
-        <article class="mac-card glass reveal delay-1">
-          <div class="window-dots"><i></i><i></i><i></i></div>
-          <h3>Modern városi atmoszféra</h3>
-          <p>Sötét, filmes, piros-fekete vizuál, neon hangulat és gyors, letisztult szerverkommunikáció.</p>
-        </article>
-        <article class="mac-card glass reveal delay-2">
-          <div class="window-dots"><i></i><i></i><i></i></div>
-          <h3>Kezdőknek is érthető</h3>
-          <p>Belépési útmutató, Discord támogatás, karakteralkotási tippek és átlátható kezdés.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="split-section">
-      <div class="image-stack reveal">
-        <img class="stack-main" src="https://wallpapers.com/images/hd/fivem-y8h4p06hlyfcygs6.jpg" alt="FiveM autos roleplay" loading="lazy" decoding="async" />
-        <img class="stack-float" src="https://wallpapers.com/images/hd/fivem-vinewood-sunset-fj9du4on3g99iing.jpg" alt="FiveM tuningolt auto" loading="lazy" decoding="async" />
-      </div>
-      <div class="split-copy reveal delay-1">
-        <span class="eyebrow">Roleplay élmény</span>
-        <h2>Utcák, üzletek, frakciók, döntések.</h2>
-        <p>Az Alpár RP koncepciója arra épül, hogy minden játékosnak legyen szerepe: civil élet, illegál, rendvédelem, mentőszolgálat, vállalkozások és saját történetszálak.</p>
-        <ul class="check-list">
-          <li>Karakterfejlődés és gazdaság</li>
-          <li>Aktív staff és Discord kommunikáció</li>
-          <li>Stílusos, gyors, mobilbarát weboldal</li>
-        </ul>
-      </div>
-    </section>
-
-    <section class="section" id="features">
-      <div class="section-head reveal">
-        <span class="eyebrow">Rendszerek</span>
-        <h2>Látványos, de nem bazári.</h2>
-      </div>
-      <div class="feature-grid">
-        <article class="feature-card reveal"><span>01</span><h3>Egyedi inventory</h3><p>Átlátható tárgykezelés, gyors használat és RP-barát logika.</p></article>
-        <article class="feature-card reveal delay-1"><span>02</span><h3>Munka rendszer</h3><p>Legális pénzkereset, civil karrier és fejlődési lehetőség.</p></article>
-        <article class="feature-card reveal delay-2"><span>03</span><h3>Rendvédelem</h3><p>Riasztások, akciók, üldözések és komoly szolgálati protokoll.</p></article>
-        <article class="feature-card reveal"><span>04</span><h3>Illegál élet</h3><p>Rizikó, kapcsolatok, területek és következmények.</p></article>
-        <article class="feature-card reveal delay-1"><span>05</span><h3>Járművek</h3><p>Városi közlekedés, tuning, garázs és autós életérzés.</p></article>
-        <article class="feature-card reveal delay-2"><span>06</span><h3>Optimalizáció</h3><p>Szép látvány úgy, hogy ne ölje meg a gépedet.</p></article>
-      </div>
-    </section>
-
-    <section class="gallery-section">
-      <div class="section-head reveal">
-        <span class="eyebrow">Hangulat</span>
-        <h2>Filmes városi atmoszféra.</h2>
-      </div>
-      <div class="gallery reveal">
-        <img src="https://wallpapers.com/images/hd/fivem-car-water-tank-6tczg02u1eel7aox.jpg" alt="FiveM muhely roleplay" loading="lazy" decoding="async" />
-        <img src="https://wallpapers.com/images/hd/customize-your-own-gaming-experience-with-fivem-sa8288834sp35ngu.jpg" alt="FiveM motoros klub" loading="lazy" decoding="async" />
-        <img src="https://wallpapers.com/images/hd/fivem-wallpaper-wni4xoohwqhccaku.jpg" alt="FiveM rendvedelmi jelenet" loading="lazy" decoding="async" />
-        <img src="https://wallpapers.com/images/hd/fivem-vinewood-sunset-fj9du4on3g99iing.jpg" alt="FiveM gyorsulasi palya" loading="lazy" decoding="async" />
-      </div>
-    </section>
-
-    <section class="map-section" id="map">
-      <div class="section-head reveal">
-        <span class="eyebrow">Los Santos Atlas</span>
-        <h2>Interaktív várostérkép.</h2>
-        <p>A teljes 3D várostérkép külön oldalon tölt be, hogy a főoldal gyors és folyamatos maradjon.</p>
-      </div>
-      <div class="map-console map-teaser glass reveal">
-        <div class="map-teaser-copy">
-          <span class="map-status">3D CITY ATLAS</span>
-          <h3>Alpár RP taktikai térkép</h3>
-          <p>ZeroDream GTA V modell, jövőbeli játékos, garázs, tárgy és event markerekkel.</p>
-          <div class="map-teaser-actions">
-            <a class="btn primary magnetic" href="map.html">3D térkép megnyitása</a>
-            <a class="btn ghost" href="user.html">Játékos panel</a>
+    <section class="view active" id="home">
+      <div class="hero">
+        <div class="hero-content reveal">
+          <p class="eyebrow">ÜDVÖZLÜNK AZ</p>
+          <h1>ALPÁR <span>RP</span></h1>
+          <h2>A MAGYAR FIVEM SZERVER</h2>
+          <p class="lead">Egy prémium szerverirányító webalkalmazás, ahol a karakter, inventory, garázs, üzenőfal, autópiac, live map és admin felügyelet egyetlen egységes felületben él.</p>
+          <div class="hero-actions">
+            <a href="/auth/discord" class="btn btn-primary">Discord belépés <b>→</b></a>
+            <button class="btn btn-dark" data-route="server">Szerver információk</button>
+          </div>
+          <div class="stats glass">
+            <div><strong id="homePlayers">0/64</strong><span>ONLINE JÁTÉKOS</span></div>
+            <div><strong id="homeVehicles">0</strong><span>AKTÍV JÁRMŰ</span></div>
+            <div><strong id="homeRestart">18:00</strong><span>KÖVETKEZŐ RESTART</span></div>
+            <div><strong id="homeBridge">STANDBY</strong><span>FIVEM BRIDGE</span></div>
           </div>
         </div>
-        <div class="map-teaser-visual" aria-hidden="true">
-          <div class="map-orbit"></div>
-          <span style="--x:18%;--y:30%">LSPD</span>
-          <span style="--x:64%;--y:42%">GARAGE</span>
-          <span style="--x:46%;--y:70%">DROP</span>
+      </div>
+
+      <div class="section-title reveal">
+        <span>SZERVER FUNKCIÓK</span>
+        <h2>Egyedi rendszerek</h2>
+        <p>Landing oldal helyett működő menedzsment-portál: minden kártya valós oldalra vagy demo műveletre van kötve.</p>
+      </div>
+      <div class="features">
+        <button class="feature reveal" data-route="character"><div class="icon" data-glyph="ID"></div><h3>Citizen ID Hub</h3><p>Pénz, bank, státusz, inventory és garázs egy nézetben.</p></button>
+        <button class="feature reveal" data-route="map"><div class="icon blue" data-glyph="GPS"></div><h3>Live Tactical Map</h3><p>GTA-style blipek, zónák, útvonalak és dispatch feed.</p></button>
+        <button class="feature reveal" data-route="social"><div class="icon purple" data-glyph="COM"></div><h3>Community Comms</h3><p>Posztok, média, kommentek és messenger jellegű chat.</p></button>
+        <button class="feature reveal" data-route="market"><div class="icon amber" data-glyph="MTR"></div><h3>Motorpool Market</h3><p>Online vagy személyes üzletként kezelhető hirdetések.</p></button>
+        <button class="feature reveal" data-route="server"><div class="icon green" data-glyph="SYS"></div><h3>Core Monitor</h3><p>Demo CPU, státusz, ticket és log áttekintés.</p></button>
+        <button class="feature reveal" data-route="admin"><div class="icon" data-glyph="OS"></div><h3>Admin Command OS</h3><p>Egyenleg, inventory, garázs és moderációs műveletek.</p></button>
+      </div>
+    </section>
+
+    <section class="view" id="server">
+      <div class="section-title left reveal"><span>OPERATIONS</span><h2>Szerver command center</h2><p>Átlátható, gyors felügyeleti felület a későbbi FiveM bridge-hez.</p></div>
+      <div class="ops-grid">
+        <article class="glass panel span-2 reveal"><span class="eyebrow">SZERVER ÁLLAPOT</span><h3>Alpár RP Core</h3><div class="server-state"><b>ONLINE</b><small>32 / 64 játékos</small></div><div class="action-row"><button class="btn btn-primary" data-action="Restart ütemezve">Restart ütemezés</button><button class="btn btn-warn" data-action="Karbantartási mód demo">Karbantartás</button><button class="btn btn-blue" data-route="map">Live map</button></div></article>
+        <article class="glass panel reveal"><h3>Resource monitor</h3><div id="resourceList" class="list"></div></article>
+        <article class="glass panel reveal"><h3>Ticket desk</h3><div id="ticketList" class="list"></div><button class="btn btn-dark" data-action="Új ticket nyitva">Új ticket</button></article>
+        <article class="glass panel span-2 reveal"><h3>Élő log</h3><div id="logList" class="log-list"></div></article>
+      </div>
+    </section>
+
+    <section class="view" id="character">
+      <div class="section-title left reveal"><span>CITIZEN HUB</span><h2>Karakter, inventory és garázs</h2></div>
+      <div class="character-grid">
+        <article class="glass panel profile reveal"><img id="profileAvatar" src="Logo.png" alt="Profil" /><span class="status online">ONLINE</span><h3 id="profileName">Alpár Játékos</h3><p>Discord demo profil / karakter előnézet</p><div class="wallet"><div>Készpénz <b class="money">$22 223</b></div><div>Bank <b class="money">$333 333</b></div><div>Frakció <b>LSPD</b></div></div><button class="btn btn-primary" data-action="Karakter frissítve">Karakter szinkron</button></article>
+        <article class="glass panel reveal"><h3>OX inventory jellegű rács</h3><div id="inventoryGrid" class="inventory-grid"></div></article>
+        <article class="glass panel reveal"><h3>Garázs</h3><div id="garageList" class="garage-list"></div></article>
+      </div>
+      <div class="citizen-extensions">
+        <article class="citizen-module glass"><header><span class="eyebrow">DOCUMENT VAULT</span><h3>Okmányok és engedélyek</h3></header><div class="document-grid"><button data-action="Személyi igazolvány megnyitva"><i>ID</i><span>Személyi igazolvány<small>Érvényes</small></span></button><button data-action="Vezetői engedély megnyitva"><i>DL</i><span>Vezetői engedély<small>A / B kategória</small></span></button><button data-action="Fegyverengedély megnyitva"><i>WL</i><span>Fegyverengedély<small>Ellenőrzés szükséges</small></span></button></div></article>
+        <article class="citizen-module glass"><header><span class="eyebrow">PROPERTY LINK</span><h3>Ingatlan és vállalkozás</h3></header><div class="property-card"><b>Alta Street Apartment 12</b><span>Biztonságos garázs · 4 férőhely</span><button data-route="map">ATLAS POZÍCIÓ</button></div><div class="property-card business"><b>Los Santos Customs</b><span>Alkalmazott · esti műszak</span><button data-action="Vállalkozás adatlap megnyitva">ADATLAP</button></div></article>
+        <article class="citizen-module glass"><header><span class="eyebrow">ACTIVITY LOG</span><h3>Karakteresemények</h3></header><div class="citizen-timeline"><p><i></i><span><b>Jármű kiadva</b><small>Karin Sultan · 14:32</small></span></p><p><i></i><span><b>Banki tranzakció</b><small>− $2 400 · 13:58</small></span></p><p><i></i><span><b>Szolgálat megkezdve</b><small>LSPD · 12:10</small></span></p></div></article>
+      </div>
+    </section>
+
+    <section class="view community-view" id="social">
+      <div class="community-hero reveal">
+        <div><span class="eyebrow">ALPÁR KÖZÖSSÉG</span><h2>A város nem áll meg, amikor kilépsz.</h2><p>Fórum, közlemények és privát üzenetek egy rendezett közösségi központban.</p></div>
+        <button class="btn btn-primary" id="newTopicButton" type="button">+ Új téma indítása</button>
+      </div>
+      <div class="community-overview reveal" aria-label="Közösségi áttekintés">
+        <div class="community-signal"><i></i><span>VÁROSI HÁLÓZAT</span><b>ONLINE</b></div>
+        <div><span>AKTÍV JÁTÉKOS</span><b>32</b><small>+8 az elmúlt órában</small></div>
+        <div><span>ÚJ BEJEGYZÉS</span><b>24</b><small>6 kiemelt téma</small></div>
+        <div><span>OLVASATLAN COMMS</span><b>05</b><small>3 aktív beszélgetés</small></div>
+        <div class="community-trend"><span>KÖZÖSSÉGI AKTIVITÁS</span><b>87%</b><i><em></em></i></div>
+      </div>
+      <div class="community-tabs reveal" role="tablist" aria-label="Közösségi nézetek">
+        <button class="active" data-community-tab="forum" data-hud="FORUM" type="button"><span>Fórum</span><small>24 új</small></button>
+        <button data-community-tab="feed" data-hud="FEED" type="button"><span>Hírfolyam</span><small>08 új</small></button>
+        <button data-community-tab="messages" data-hud="COMMS" type="button"><span>Üzenetek</span><small id="messageUnreadCount">05</small></button>
+        <button data-community-tab="media" data-hud="MEDIA" type="button"><span>Média</span><small>126</small></button>
+      </div>
+      <div class="community-panel active" data-community-panel="forum">
+        <div class="forum-layout">
+          <aside class="forum-sidebar glass reveal">
+            <label class="forum-search"><span>⌕</span><input id="forumSearch" type="search" placeholder="Keresés a fórumban…" /></label>
+            <nav class="forum-nav" aria-label="Fórum kategóriák">
+              <button class="active" data-forum-category="all"><i>ALL</i><span>Minden téma<small>Legfrissebb aktivitás</small></span><b>24</b></button>
+              <button data-forum-category="official"><i>HQ</i><span>Hivatalos<small>Hírek és szabályzat</small></span><b>3</b></button>
+              <button data-forum-category="roleplay"><i>RP</i><span>Roleplay<small>Történetek és frakciók</small></span><b>8</b></button>
+              <button data-forum-category="help"><i>SOS</i><span>Segítség<small>Kérdések és útmutatók</small></span><b>6</b></button>
+              <button data-forum-category="market"><i>MTR</i><span>Piactér<small>Járművek és üzletek</small></span><b>7</b></button>
+            </nav>
+            <div class="forum-online"><span class="eyebrow">MOST ONLINE</span><div class="avatar-stack"><i>AK</i><i>NR</i><i>VB</i><i>+29</i></div><p><b>32 játékos</b> böngészi a fórumot</p></div>
+          </aside>
+          <section class="forum-main">
+            <div class="forum-toolbar"><div><span class="eyebrow">AKTÍV TÉMÁK</span><h3>Közösségi fórum</h3></div><select id="forumSort" aria-label="Témák rendezése"><option value="active">Legaktívabb</option><option value="new">Legújabb</option><option value="popular">Legnépszerűbb</option></select></div>
+            <div class="forum-topic-list" id="forumTopicList"></div>
+          </section>
+          <aside class="forum-activity glass"><span class="eyebrow">ÉLŐ AKTIVITÁS</span><div id="forumActivity"></div></aside>
         </div>
       </div>
-    </section>
-
-    <section class="section" id="jobs">
-      <div class="section-head reveal">
-        <span class="eyebrow">Frakciók</span>
-        <h2>Válassz oldalt. Vagy építs sajátot.</h2>
-      </div>
-      <div class="timeline">
-        <div class="timeline-item reveal"><b>LSPD</b><p>Rendvédelem, járőrözés, nyomozás és bevetések.</p></div>
-        <div class="timeline-item reveal"><b>EMS</b><p>Mentések, sürgősségi ellátás és életmentő RP szituációk.</p></div>
-        <div class="timeline-item reveal"><b>Mechanic</b><p>Tuning, javítás, autós közösség és garázsélet.</p></div>
-        <div class="timeline-item reveal"><b>Civil / Business</b><p>Vállalkozások, saját karakterút és hétköznapi RP.</p></div>
-      </div>
-    </section>
-
-    <section class="rules" id="rules">
-      <div class="rules-card glass reveal">
-        <span class="eyebrow">Alapszabály</span>
-        <h2>Az RP akkor jó, ha nem csak te nyersz belőle.</h2>
-        <p>Ne powergame-elj, ne metagame-elj, ne ronts más játékélményén. Karakterben gondolkodj, következményekkel játssz, és ne Fortnite-szerverként kezeld a várost.</p>
-        <a class="btn ghost magnetic" href="#join">Discord szabályzat</a>
-      </div>
-    </section>
-
-    <section class="join" id="join">
-      <div class="join-panel reveal">
-        <span class="eyebrow">Csatlakozás</span>
-        <h2>Felhasználói felület.</h2>
-        <p>Nyisd meg a játékos panelt, ahol később a karaktered, whitelist státuszod és szerver adataid jelennek meg.</p>
-        <div class="auth-shell" id="authShell">
-          <div class="auth-card auth-card-login" id="authLogin">
-            <div class="auth-icon">U</div>
-            <div>
-              <h3>Játékos panel</h3>
-              <p>Belépés nélkül megnyitható előnézeti felület.</p>
-            </div>
-            <a class="btn primary auth-discord" href="user.html">Felhasználói felület</a>
-          </div>
-          <div class="auth-card auth-card-user" id="authUser" hidden>
-            <img id="authAvatar" src="" alt="Discord avatar" />
-            <div class="auth-user-info">
-              <span class="auth-badge">Bejelentkezve</span>
-              <h3 id="authName">Discord felhasználó</h3>
-              <p>ID: <b id="authId">-</b></p>
-              <p>Regisztráció: <b id="authRegistered">-</b></p>
-            </div>
-            <button class="btn ghost" id="authLogout" type="button">Kijelentkezés</button>
-          </div>
-          <p class="auth-message" id="authMessage" role="status"></p>
+      <div class="community-panel" data-community-panel="feed"><section id="postFeed" class="feed modern-feed"></section></div>
+      <div class="community-panel" data-community-panel="messages">
+        <div class="message-command-bar glass"><span><i></i><b>COMMS ONLINE</b><small>Valós idejű csatorna készen áll</small></span><div><button data-action="Rögzített üzenetek megnyitva">PINNED <b>3</b></button><button data-action="Csatolmányközpont megnyitva">FILES <b>4</b></button><button data-action="Koordinátaküldés bekapcsolva">GPS SHARE</button></div></div>
+        <div class="messenger-shell glass">
+          <aside class="messenger-list">
+            <div class="messenger-heading"><div><span class="eyebrow">INBOX</span><h3>Üzenetek</h3></div><button id="newMessageButton" type="button" aria-label="Új üzenet">+</button></div>
+            <label class="forum-search"><span>⌕</span><input id="messageSearch" type="search" placeholder="Beszélgetés keresése…" /></label>
+            <div class="message-filters"><button class="active" data-message-filter="all">Mind</button><button data-message-filter="unread">Olvasatlan</button><button data-message-filter="groups">Csoportok</button></div>
+            <div class="threads modern-threads" id="chatThreads"></div>
+          </aside>
+          <section class="conversation-panel">
+            <header class="conversation-header" id="conversationHeader"></header>
+            <div id="chatBox" class="chat-box modern-chat"></div>
+            <div class="quick-replies" id="quickReplies"></div>
+            <form id="chatForm" class="chat-form modern-chat-form"><button type="button" class="chat-tool" aria-label="Csatolmány">+</button><input name="message" placeholder="Írj egy üzenetet…" autocomplete="off" /><button class="btn btn-primary">Küldés</button></form>
+          </section>
+          <aside class="conversation-info" id="conversationInfo"></aside>
         </div>
+      </div>
+      <div class="community-panel" data-community-panel="media"><div class="media-panel glass"><div class="forum-toolbar"><div><span class="eyebrow">GALÉRIA</span><h3>Közösségi média</h3></div></div><div id="galleryGrid" class="gallery community-gallery"></div></div></div>
+    </section>
+
+    <section class="view" id="market">
+      <div class="section-title left reveal"><span>MARKETPLACE</span><h2>Használt autó kereskedés</h2><p>A hirdetés gombjai a messenger demo beszélgetéshez kötődnek.</p></div>
+      <div id="marketGrid" class="market-grid"></div>
+    </section>
+
+    <section class="view full-map road-map-view" id="map">
+      <div class="road-map-shell glass" id="roadMapShell">
+        <aside class="road-map-sidebar">
+          <div class="road-map-brand"><span class="eyebrow">LIVE SERVER</span><h2>Alpár Atlas</h2><p>Az élő térkép betöltése…</p></div>
+        </aside>
+
+        <div class="road-map-stage" id="atlas" role="application" aria-label="Alpár RP interaktív úthálózat" tabindex="0">
+          <canvas id="roadMapCanvas"></canvas>
+          <div class="road-map-topbar"></div>
+          <div class="road-map-coords"><span>X <b id="roadCoordX">0</b></span><span>Y <b id="roadCoordY">0</b></span><span>ZOOM <b id="roadZoom">84%</b></span></div>
+          <div class="road-map-zoom"><button id="roadZoomIn" type="button">+</button><button id="roadZoomOut" type="button">−</button></div>
+          <div class="road-map-hint" id="roadMapHint"><b>Mozgatás</b><span>Húzd a térképet, görgővel nagyíts.</span></div>
+        </div>
+
+        <aside class="road-inspector">
+          <div class="road-empty"><b>Élő adatok betöltése…</b></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="view" id="admin">
+      <div class="section-title left reveal"><span>ADMIN OS</span><h2>Teljes szerver felügyelet</h2></div>
+      <div class="admin-grid" id="adminGrid"></div>
+    </section>
+
+    <section class="view dispatch-view" id="dispatch">
+      <div class="section-title left reveal"><span>LIVE OPERATIONS</span><h2>Dispatch Command Center</h2><p>Valós idejű rendőrségi, mentő- és szerelőhívások, egységkiosztás és térképes koordináció.</p></div>
+      <div class="dispatch-status glass">
+        <div><i class="dispatch-live-dot"></i><span>HÁLÓZAT</span><b id="dispatchConnection">KAPCSOLÓDÁS</b></div>
+        <div><span>NYITOTT HÍVÁS</span><b id="dispatchOpenCount">0</b></div>
+        <div><span>AKTÍV EGYSÉG</span><b id="dispatchUnitCount">0</b></div>
+        <div><span>ÁTLAG VÁLASZIDŐ</span><b>02:41</b></div>
+      </div>
+      <div class="dispatch-layout">
+        <section class="dispatch-board glass"><header><div><span class="eyebrow">INCIDENT FEED</span><h3>Aktív hívások</h3></div><select id="dispatchFilter" aria-label="Dispatch szűrés"><option value="all">Minden prioritás</option><option value="critical">Kritikus</option><option value="high">Magas</option><option value="normal">Normál</option></select></header><div id="dispatchList" class="dispatch-list"></div></section>
+        <aside class="dispatch-units glass"><span class="eyebrow">UNIT GRID</span><h3>Szolgálatban</h3><div id="dispatchUnits"></div><button class="btn btn-blue" data-route="map">Megnyitás az Atlasban</button></aside>
+      </div>
+    </section>
+
+    <section class="view settings-view" id="settings">
+      <div class="section-title left reveal"><span>USER CONFIG</span><h2>Interface Loadout</h2><p>A felület látványa, mozgása és értesítései eszközönként menthetők.</p></div>
+      <div class="settings-grid">
+        <article class="settings-panel glass"><span class="eyebrow">VIZUÁLIS PROFIL</span><h3>Aero &amp; Glow</h3><label><span>Glow intenzitás<small>A peremfények erőssége</small></span><input id="settingGlow" type="range" min="0" max="100" value="70"><output>70%</output></label><label><span>Aero blur<small>Üvegfelületek elmosása</small></span><input id="settingBlur" type="range" min="0" max="20" value="14"><output>14px</output></label></article>
+        <article class="settings-panel glass"><span class="eyebrow">MOZGÁS</span><h3>Animációs profil</h3><div class="setting-options" id="settingMotion"><button data-motion="off">Kikapcsolva</button><button data-motion="reduced">Visszafogott</button><button class="active" data-motion="full">Teljes</button></div><label class="setting-switch"><span>Interaktív glow<small>Csak hover és fókusz esetén</small></span><input id="settingInteractiveGlow" type="checkbox" checked><i></i></label></article>
+        <article class="settings-panel glass"><span class="eyebrow">ÉRTESÍTÉSEK</span><h3>Comms beállítások</h3><label class="setting-switch"><span>Popup értesítések<small>Új privát üzenetek jelzése</small></span><input id="settingPopups" type="checkbox" checked><i></i></label><label class="setting-switch"><span>Hangjelzés<small>Későbbi FiveM bridge hangokhoz</small></span><input id="settingSounds" type="checkbox"><i></i></label><button class="btn btn-primary" id="saveSettings" type="button">Profil mentése</button></article>
       </div>
     </section>
   </main>
 
   <footer>
+    <div class="brand footer-brand"><img src="Logo.png" alt="" /><span>ALPÁR</span><small>RP</small></div>
     <p>© <span id="year"></span> Alpár RP. Minden jog fenntartva.</p>
-    <p class="credit">FiveM háttérképek forrása: <a href="https://wallpapers.com/fivem" target="_blank" rel="noopener">Wallpapers.com</a>.</p>
   </footer>
 
-  <script src="script.js?v=global-loader-map-page"></script>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="messenger-popup" id="messengerPopup" aria-live="polite">
+    <button class="messenger-fab" id="messengerFab" type="button" aria-label="Üzenetek megnyitása" aria-expanded="false">
+      <span class="messenger-fab-logo"><img src="Logo.png" alt=""><i></i></span><b id="messengerFabCount">5</b>
+    </button>
+    <section class="messenger-popover" id="messengerPopover" hidden aria-label="Gyors üzenetek">
+      <header><span class="thread-avatar" id="popupAvatar">AP<i class="online"></i></span><span><b id="popupName">Autópiac</b><small id="popupStatus">Most elérhető</small></span><button id="messengerPopupClose" type="button" aria-label="Bezárás">×</button></header>
+      <div class="popup-message-list" id="popupMessageList"></div>
+      <div class="popup-typing" id="popupTyping"><i></i><i></i><i></i><span>éppen ír…</span></div>
+      <form id="popupChatForm"><input name="message" autocomplete="off" placeholder="Írj egy üzenetet…" aria-label="Gyors üzenet"><button type="submit" aria-label="Küldés">➤</button></form>
+    </section>
+    <button class="message-notification" id="messageNotification" type="button" hidden>
+      <span class="thread-avatar">AP<i class="online"></i></span><span><b>Új üzenet · Autópiac</b><small>Az Elegy még eladó?</small></span><i>most</i>
+    </button>
+  </div>
+  <div class="modal" id="mediaModal" hidden><button class="modal-close" id="modalClose">×</button><div id="modalBody"></div></div>
+  <script src="assets/js/gta-road-data.js"></script>
+  <script src="road-map.js?v=operations-2"></script>
+  <script src="assets/js/portal-bridge.js?v=2"></script>
+  <script src="script.js?v=red-command-7"></script>
 </body>
 </html>
