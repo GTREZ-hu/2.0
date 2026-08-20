@@ -5,7 +5,7 @@
   "type": "commonjs",
   "scripts": {
     "start": "node server.js",
-    "check": "node --check script.js && node --check server.js",
+    "check": "node --check server.js && node --check script.js && node --check road-map.js",
     "serve": "node server.js"
   }
 }

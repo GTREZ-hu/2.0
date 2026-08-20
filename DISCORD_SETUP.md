@@ -5,7 +5,7 @@
 3. Az `OAuth2` menüben add hozzá ezt a Redirect URI-t:
 
 ```text
-http://localhost:3000/auth/discord/callback
+https://two-0-1-ian7.onrender.com/auth/discord/callback
 ```
 
 4. Másold ki az application `Client ID` értékét.
@@ -15,7 +15,7 @@ http://localhost:3000/auth/discord/callback
 ```env
 DISCORD_CLIENT_ID=ide_jon_a_client_id
 DISCORD_CLIENT_SECRET=ide_jon_a_client_secret
-DISCORD_REDIRECT_URI=http://localhost:3000/auth/discord/callback
+DISCORD_REDIRECT_URI=https://two-0-1-ian7.onrender.com/auth/discord/callback
 PORT=3000
 ```
 
@@ -25,10 +25,10 @@ PORT=3000
 start.bat
 ```
 
-8. Böngészőben ezt nyisd meg:
+8. A közzétett weboldal címe:
 
 ```text
-http://localhost:3000
+https://two-0-1-ian7.onrender.com
 ```
 
 Ne az `index.html` fájlt nyisd meg közvetlenül, mert a Discord login szerveroldali útvonalakat használ.
