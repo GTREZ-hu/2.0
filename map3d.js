@@ -30,31 +30,11 @@
   let lastRenderTime = 0;
   let hoverFrame = 0;
   let pendingHoverEvent = null;
-  let demoTimer = 0;
-  let demoPlayers = [];
-  let demoTick = 0;
   let selectedPoint = null;
   let policeZoneRadius = 420;
 
   const mouse = new THREE.Vector2();
   const raycaster = new THREE.Raycaster();
-
-  const demoMarkers = [
-    { id: 'player-self', type: 'player', label: 'Te', x: -272.18, y: -955.78, z: 165, color: '#4fe8ff' },
-    { id: 'police-1', type: 'faction', label: 'LSPD', x: 447.12, y: -990.86, z: 78.16, color: '#5fa8ff' },
-    { id: 'garage-legion', type: 'garage', label: 'Garazs', x: 215.8, y: -810.2, z: 80, color: '#f5c76b' },
-    { id: 'item-drop', type: 'item', label: 'Drop', x: -51.01, y: -1113.63, z: 56.02, color: '#ff3154' }
-  ];
-
-  const demoAnchors = [
-    { name: 'Legion', x: 215, y: -810, z: 80 },
-    { name: 'LSPD', x: 447, y: -990, z: 78 },
-    { name: 'Sandy', x: 1850, y: 3680, z: 85 },
-    { name: 'Paleto', x: -1100, y: 5200, z: 80 },
-    { name: 'Pier', x: -1680, y: -1070, z: 65 },
-    { name: 'Airport', x: -1037, y: -2738, z: 80 },
-    { name: 'Mirror', x: 1150, y: -640, z: 86 }
-  ];
 
   const roadNodes = [
     { id: 'legion', x: 215, y: -810, z: 82 },
@@ -422,95 +402,6 @@
     return path.length ? path : [start, end];
   };
 
-  const randomNear = (anchor, radius = 420) => {
-    const angle = Math.random() * Math.PI * 2;
-    const distance = Math.sqrt(Math.random()) * radius;
-    return {
-      x: anchor.x + Math.cos(angle) * distance,
-      y: anchor.y + Math.sin(angle) * distance,
-      z: anchor.z + randomBetween(-8, 24)
-    };
-  };
-
-  const createDemoEntities = () => {
-    const playerNames = ['Makai', 'Nora', 'Bence', 'Alex', 'Dani', 'Lili', 'Mark', 'Ricsi', 'Tomi', 'Zara', 'Viktor', 'Mira'];
-    demoPlayers = playerNames.slice(0, 12).map((name, index) => {
-      const anchor = demoAnchors[index % demoAnchors.length];
-      const point = randomNear(anchor, 520);
-      return Object.assign({
-        id: `demo-player-${index + 1}`,
-        type: 'player',
-        label: name,
-        color: '#4fe8ff',
-        anchor,
-        speed: randomBetween(18, 46)
-      }, point);
-    });
-
-    const policeUnits = ['LSPD-1', 'LSPD-2', 'BCSO', 'SWAT'].map((label, index) => {
-      const anchor = demoAnchors[(index + 1) % demoAnchors.length];
-      return Object.assign({
-        id: `demo-police-${index + 1}`,
-        type: 'police',
-        label,
-        color: '#5fa8ff',
-        anchor,
-        speed: randomBetween(10, 28)
-      }, randomNear(anchor, 340));
-    });
-
-    const serviceMarks = [
-      { id: 'demo-garage-legion', type: 'garage', label: 'Legion Garage', color: '#f5c76b', x: 215.8, y: -810.2, z: 80 },
-      { id: 'demo-hospital', type: 'ems', label: 'Pillbox EMS', color: '#7cffb2', x: 300.5, y: -590.2, z: 90 },
-      { id: 'demo-mechanic', type: 'mechanic', label: 'Bennys', color: '#f5c76b', x: -205.6, y: -1324.4, z: 72 },
-      { id: 'demo-drop-1', type: 'event', label: 'Event', color: '#ff3154', x: -1680, y: -1070, z: 65 },
-      { id: 'demo-drop-2', type: 'item', label: 'Drop', color: '#ff3154', x: 1850, y: 3680, z: 85 }
-    ];
-
-    const zones = [
-      { id: 'zone-police-legion', type: 'police-zone', label: 'Lezart terulet', x: 215, y: -810, z: 80, radius: 360, color: '#5fa8ff', opacity: .78 },
-      { id: 'zone-investigation-lspd', type: 'investigation', label: 'Nyomozas', x: 447, y: -990, z: 78, width: 520, depth: 340, shape: 'box', color: '#5fa8ff', opacity: .7 },
-      { id: 'zone-event-sandy', type: 'event-zone', label: 'Event zona', x: 1850, y: 3680, z: 85, radius: 430, color: '#f5c76b', opacity: .62 }
-    ];
-
-    return {
-      players: [demoMarkers[0]].concat(demoPlayers, policeUnits),
-      items: serviceMarks.filter(mark => mark.type === 'item' || mark.type === 'event'),
-      marks: serviceMarks.filter(mark => mark.type !== 'item' && mark.type !== 'event'),
-      zones
-    };
-  };
-
-  const moveDemoPlayers = () => {
-    if (!demoPlayers.length || document.hidden || disposed) return;
-    demoTick += 1;
-    demoPlayers.forEach((player, index) => {
-      const angle = demoTick * .14 + index * .9;
-      const orbit = 180 + (index % 4) * 55;
-      player.x += Math.cos(angle) * (player.speed * .16);
-      player.y += Math.sin(angle * .82) * (player.speed * .14);
-      const driftFromAnchor = Math.hypot(player.x - player.anchor.x, player.y - player.anchor.y);
-      if (driftFromAnchor > orbit * 2.2) {
-        const next = randomNear(player.anchor, orbit);
-        player.x = next.x;
-        player.y = next.y;
-        player.z = next.z;
-      }
-      updateMarker(player);
-    });
-  };
-
-  const startDemoSimulation = () => {
-    window.Alpar3DMap.randomizeDemo();
-    if (demoTimer) window.clearInterval(demoTimer);
-    demoTimer = window.setInterval(moveDemoPlayers, 1400);
-  };
-
-  const stopDemoSimulation = () => {
-    if (demoTimer) window.clearInterval(demoTimer);
-    demoTimer = 0;
-  };
-
   const addMarker = marker => {
     removeMarker(marker.id);
     markerGroup.add(createMarker(marker));
@@ -556,7 +447,7 @@
 
   const getSelfWorld = () => {
     const self = markerGroup && markerGroup.getObjectByName('player-self');
-    if (!self) return demoMarkers[0];
+    if (!self) return null;
     return sceneToWorld(self.position);
   };
 
@@ -606,6 +497,7 @@
     if (!selectedPoint || !routeGroup || !markerGroup) return;
     clearRouteLayer();
     const start = getSelfWorld();
+    if (!start) return;
     const roadPath = findRoadPath(start, selectedPoint).map(point => Object.assign({}, point, { z: (point.z || 80) + 22 }));
     const route = createLinePath(roadPath, '#f5c76b', .94);
     route.name = 'selected-route-line';
@@ -649,7 +541,6 @@
     clearMarkers();
     clearZones();
     clearRouteLayer();
-    stopDemoSimulation();
     disposeObject(mapObject);
     if (mapObject && scene) scene.remove(mapObject);
     if (markerGroup && scene) scene.remove(markerGroup);
