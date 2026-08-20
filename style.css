@@ -460,3 +460,5 @@ body.page-reveal .topbar,body.page-reveal .glass,body.page-reveal .community-ove
   body.page-reveal .view.active{animation-duration:.34s!important}
   body.page-reveal .topbar,body.page-reveal .glass,body.page-reveal .community-overview,body.page-reveal .messenger-shell{backdrop-filter:none!important}
 }
+body:not(.is-authenticated) .auth-only { display: none !important; }
+.nav-panel-link { color: inherit; font: inherit; text-decoration: none; }

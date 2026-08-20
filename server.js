@@ -14,6 +14,8 @@ let portalVersion = 1;
 let dispatchState = [];
 const publicFiles = new Set(['/index.html', '/style.css', '/script.js', '/road-map.js', '/Logo.png', '/assets/js/portal-bridge.js']);
 const publicPrefixes = ['/assets/'];
+const authenticatedFiles = new Set(['/user.html', '/map.html', '/dashboard.js', '/map3d.js']);
+const authenticatedPrefixes = ['/zerodream_3dmap-main/'];
 const SESSION_TTL = 60 * 60 * 24 * 30 * 1000;
 const BRIDGE_STALE_MS = Math.max(15000, Number(process.env.BRIDGE_STALE_MS || 30000));
 
@@ -350,7 +352,13 @@ async function revokeDiscordToken(accessToken) {
 function serveStatic(req, res) {
   const url = new URL(req.url, `http://${req.headers.host}`);
   const requestedPath = decodeURIComponent(url.pathname === '/' ? '/index.html' : url.pathname);
-  if (!publicFiles.has(requestedPath) && !publicPrefixes.some(prefix => requestedPath.startsWith(prefix))) {
+  const requiresLogin = authenticatedFiles.has(requestedPath)
+    || authenticatedPrefixes.some(prefix => requestedPath.startsWith(prefix));
+  if (requiresLogin && !getSessionUser(req)) {
+    redirect(res, '/?auth=login-required');
+    return;
+  }
+  if (!requiresLogin && !publicFiles.has(requestedPath) && !publicPrefixes.some(prefix => requestedPath.startsWith(prefix))) {
     send(res, 404, 'Not found', { 'Content-Type': 'text/plain; charset=utf-8' });
     return;
   }
@@ -384,11 +392,6 @@ async function handleRequest(req, res) {
 
   if (url.pathname === '/health') {
     sendJson(res, 200, { ok: true, service: 'alpar-rp-portal', bridge: isBridgeFresh(), discord: isDiscordConfigured() });
-    return;
-  }
-
-  if (url.pathname === '/user.html') {
-    redirect(res, '/');
     return;
   }
 
@@ -541,7 +544,7 @@ async function handleRequest(req, res) {
     try {
       const discordUser = await exchangeDiscordCode(code);
       const sessionToken = saveDiscordUser(discordUser);
-      redirect(res, '/?auth=success#join', [
+      redirect(res, '/user.html?auth=success', [
         cookie('alpar_session', sessionToken, 60 * 60 * 24 * 30),
         cookie('alpar_oauth_state', '', 0)
       ]);

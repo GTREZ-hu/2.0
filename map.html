@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Alpár RP | Interaktív 3D térkép</title>
+  <meta name="description" content="Az Alpár RP interaktív Los Santos és Blaine County térképe." />
+  <meta name="theme-color" content="#050505" />
+  <script>
+    if (window.location.protocol === 'file:') {
+      window.location.replace('http://localhost:3000/map.html');
+    }
+  </script>
+  <link rel="icon" href="Logo.png" type="image/png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Orbitron:wght@600;700;800;900&display=swap&subset=latin-ext" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=map-console-5" />
+</head>
+<body class="map-page">
+  <div class="noise" aria-hidden="true"></div>
+  <div class="fx-atmosphere" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="fx-cursor" id="fxCursor" aria-hidden="true"></div>
+
+  <header class="map-nav">
+    <a href="index.html#map" class="brand" aria-label="Vissza az Alpár RP oldalára">
+      <img src="Logo.png" alt="" /><span>ALPÁR</span><small>ATLAS</small>
+    </a>
+    <div class="map-nav-copy"><b>Városi műveleti térkép</b><span><i></i> Rendszer online</span></div>
+    <div class="map-nav-actions">
+      <button class="map-icon-button" id="mapFullscreen" type="button" aria-label="Teljes képernyő" title="Teljes képernyő">⛶</button>
+      <a class="btn btn-dark" href="index.html#map">Vissza a portálra</a>
+    </div>
+  </header>
+
+  <main class="map-page-main">
+    <aside class="map-control-panel glass" aria-label="Térkép vezérlőpult">
+      <div class="map-panel-heading">
+        <span class="eyebrow">LOS SANTOS ATLAS</span>
+        <h1>Élő 3D térkép</h1>
+        <p>Válassz területet, vagy mozgasd a térképet egérrel. Dupla kattintással útvonalat és lezárási zónát jelölhetsz ki.</p>
+      </div>
+
+      <div class="map-section-label"><span>Gyors nézetek</span><b>05</b></div>
+      <div class="map-presets">
+        <button class="map-preset is-active" data-x="0" data-y="0" data-z="3"><span>01</span>Központ</button>
+        <button class="map-preset" data-x="-1800" data-y="-900" data-z="4"><span>02</span>Los Santos</button>
+        <button class="map-preset" data-x="1500" data-y="3600" data-z="4"><span>03</span>Blaine County</button>
+        <button class="map-preset" data-x="-1100" data-y="5200" data-z="4"><span>04</span>Paleto Bay</button>
+        <button class="map-preset" data-x="-3000" data-y="3000" data-z="5"><span>05</span>Nyugati part</button>
+      </div>
+
+      <div class="map-section-label"><span>Lezárási sugár</span><output id="policeRadiusValue" for="policeRadius">420 m</output></div>
+      <input class="map-range" id="policeRadius" type="range" min="100" max="1600" step="10" value="420" aria-label="Lezárási sugár" />
+
+      <div class="map-control-actions">
+        <button class="map-action map-action-primary" id="mapPoliceZone" type="button">Lezárás elhelyezése</button>
+        <button class="map-action" id="mapReset" type="button">Alapnézet</button>
+      </div>
+
+      <div class="map-help">
+        <b>Irányítás</b>
+        <span><kbd>Bal egér</kbd> forgatás</span>
+        <span><kbd>Jobb egér</kbd> mozgatás</span>
+        <span><kbd>Görgő</kbd> nagyítás</span>
+      </div>
+    </aside>
+
+    <section class="map-viewport glass" id="map3dWrap" aria-label="3D térképnézet">
+      <div class="map-viewport-top">
+        <div class="map-coords" aria-label="Aktuális koordináták">
+          <span>X <b id="mapX">0</b></span><span>Y <b id="mapY">0</b></span><span>Z <b id="mapZ">0</b></span>
+        </div>
+        <div class="map-zoom-tools">
+          <button id="mapZoomOut" type="button" aria-label="Kicsinyítés">−</button>
+          <button id="mapZoomIn" type="button" aria-label="Nagyítás">+</button>
+        </div>
+      </div>
+
+      <div class="map-3d-stage" id="map3dStage" role="application" aria-label="Alpár RP interaktív 3D térkép">
+        <div class="map-loader" id="map3dLoader" role="status" aria-live="polite">
+          <img src="Logo.png" alt="" />
+          <span>3D VÁROSMODELL BETÖLTÉSE</span>
+          <b id="map3dProgress">0%</b>
+          <i></i>
+          <small>A nagy méretű térkép első betöltése néhány másodpercet igénybe vehet.</small>
+        </div>
+      </div>
+
+      <div class="map-viewport-bottom">
+        <div class="map-live-status"><i></i><span id="map3dStatus">Modell betöltése…</span></div>
+        <div class="map-legend" aria-label="Jelmagyarázat">
+          <span><i class="legend-player"></i>Játékos</span>
+          <span><i class="legend-police"></i>Rendőrség</span>
+          <span><i class="legend-zone"></i>Lezárás</span>
+          <span><i class="legend-event"></i>Event / drop</span>
+          <span><i class="legend-garage"></i>Garázs</span>
+        </div>
+        <span class="map-marker-total"><b id="map3dMarkerCount">0</b> aktív marker</span>
+      </div>
+    </section>
+  </main>
+
+  <script src="zerodream_3dmap-main/html/three.js"></script>
+  <script src="zerodream_3dmap-main/html/OrbitControls.js"></script>
+  <script src="zerodream_3dmap-main/html/MTLLoader.js"></script>
+  <script src="zerodream_3dmap-main/html/OBJLoader.js"></script>
+  <script src="map3d.js?v=map-console-4"></script>
+</body>
+</html>

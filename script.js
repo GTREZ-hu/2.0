@@ -11,6 +11,10 @@ function toast(message) {
 }
 
 function navigate(route) {
+  if (route !== 'home' && !document.body.classList.contains('is-authenticated')) {
+    toast('Ehhez előbb jelentkezz be Discorddal!');
+    return;
+  }
   if (!document.getElementById(route)?.classList.contains('view')) return;
   $$('.view').forEach(view => view.classList.toggle('active', view.id === route));
   $$('[data-route]').forEach(button => button.classList.toggle('active', button.dataset.route === route));
@@ -44,7 +48,11 @@ async function loadUser() {
   const response = await fetch('/api/me', { cache: 'no-store' });
   if (!response.ok) return;
   const { user } = await response.json();
-  if (!user) return;
+  if (!user) {
+    document.body.classList.remove('is-authenticated');
+    return;
+  }
+  document.body.classList.add('is-authenticated');
   const account = $('#discordLogin');
   account.textContent = user.globalName || user.username;
   account.href = '#';
@@ -83,5 +91,6 @@ const auth = new URLSearchParams(window.location.search).get('auth');
 if (auth === 'success') toast('Sikeres Discord-belépés. Üdv az Alpár RP oldalán!');
 if (auth === 'missing-discord-config') toast('A Discord-belépés még nincs konfigurálva.');
 if (auth === 'invalid-state' || auth === 'discord-error') toast('A Discord-belépés nem sikerült. Próbáld újra!');
+if (auth === 'login-required') toast('A kért oldalhoz Discord-belépés szükséges.');
 
 window.addEventListener('load', () => setTimeout(() => $('#pageLoader')?.classList.add('hide'), 250));
