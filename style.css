@@ -405,6 +405,10 @@ body[data-bridge-status="connecting"] .dispatch-live-dot,body[data-bridge-status
 @media(max-width:680px){.road-map-topbar{gap:5px}.road-map-search{width:calc(100% - 128px)}.road-map-3d-launch{min-width:67px;height:44px;padding:0 7px}.road-map-3d-launch span{font-size:6px}.road-map-actions{margin-left:0}.road-map-actions button:nth-child(1){display:none}}
 @media(max-width:360px){.road-map-search{width:calc(100% - 116px);padding-left:9px}.road-map-search>span{font-size:15px}.road-map-3d-launch{min-width:60px;gap:3px}.road-map-3d-launch span{display:none}}
 
+/* Valós szolgáltatásállapotok: ne maradjon hardcoded ONLINE vagy 3D demo felirat. */
+.discord-feature h3:after{content:none}.discord-status{display:block;margin-top:6px;color:#ffb43c;font:800 6px var(--hud-font);letter-spacing:.12em}.discord-status:not(.offline){color:var(--green)}
+@media(max-width:900px){.road-map-links .btn:before{content:"VISSZA";font-size:7px}}
+
 /* Reszponzív oldalváltás: desktop diagonal, mobil HUD fade */
 @media(min-width:761px){
   body[data-motion="reduced"] .fx-transition{display:block!important}
