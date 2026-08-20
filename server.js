@@ -15,6 +15,7 @@ let dispatchState = [];
 const publicFiles = new Set(['/index.html', '/style.css', '/script.js', '/road-map.js', '/Logo.png', '/assets/js/portal-bridge.js']);
 const publicPrefixes = ['/assets/'];
 const SESSION_TTL = 60 * 60 * 24 * 30 * 1000;
+const BRIDGE_STALE_MS = Math.max(15000, Number(process.env.BRIDGE_STALE_MS || 30000));
 
 function loadEnvFile() {
   const envFile = path.join(rootDir, '.env');
@@ -35,6 +36,15 @@ loadEnvFile();
 
 const port = Number(process.env.PORT || 3000);
 const redirectUri = process.env.DISCORD_REDIRECT_URI || `http://localhost:${port}/auth/discord/callback`;
+
+function isBridgeFresh() {
+  const updatedAt = Date.parse(liveMapState.updatedAt || '');
+  return Number.isFinite(updatedAt) && Date.now() - updatedAt <= BRIDGE_STALE_MS;
+}
+
+function isDiscordConfigured() {
+  return Boolean(process.env.DISCORD_CLIENT_ID && process.env.DISCORD_CLIENT_SECRET && redirectUri);
+}
 
 const mimeTypes = {
   '.html': 'text/html; charset=utf-8',
@@ -123,9 +133,10 @@ function broadcastLiveMap() {
 
 function portalSnapshot() {
   const players = liveMapState.players.length;
+  const bridgeFresh = isBridgeFresh();
   return {
     server: {
-      online: Boolean(liveMapState.server?.online),
+      online: bridgeFresh && Boolean(liveMapState.server?.online),
       name: liveMapState.server?.name || 'Alpár RP',
       players,
       maxPlayers: liveMapState.server?.maxPlayers || 64,
@@ -134,8 +145,9 @@ function portalSnapshot() {
       nextRestart: '18:00',
       latency: liveMapState.server?.latency || null,
       updatedAt: liveMapState.updatedAt,
-      source: liveMapState.updatedAt ? 'fivem-bridge' : 'standby'
+      source: bridgeFresh ? 'fivem-bridge' : 'standby'
     },
+    auth: { discordConfigured: isDiscordConfigured() },
     dispatch: dispatchState,
     community: { online: players, posts: 0, unread: 0, activity: players > 0 ? 100 : 0 }
   };
@@ -149,7 +161,7 @@ function portalEnvelope() {
     capabilities: {
       realtime: true,
       transport: 'sse',
-      modules: ['server', 'live-map', 'dispatch', 'community', 'character', 'comms', 'settings'],
+      modules: ['server', 'live-map', 'dispatch', 'community'],
       commands: ['dispatch.assign', 'dispatch.close'],
     },
     data: portalSnapshot(),
@@ -371,7 +383,7 @@ async function handleRequest(req, res) {
   const url = new URL(req.url, `http://${req.headers.host}`);
 
   if (url.pathname === '/health') {
-    sendJson(res, 200, { ok: true, service: 'alpar-rp-portal', bridge: Boolean(liveMapState.updatedAt) });
+    sendJson(res, 200, { ok: true, service: 'alpar-rp-portal', bridge: isBridgeFresh(), discord: isDiscordConfigured() });
     return;
   }
 

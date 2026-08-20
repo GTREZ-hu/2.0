@@ -32,6 +32,12 @@ function renderServer(state = {}) {
   $('#serverOnline').textContent = connected ? 'ONLINE' : 'NINCS ÉLŐ ADAT';
   $('#serverOnline').classList.toggle('offline', !connected);
   $('#serverPlayers').textContent = `${players} / ${maxPlayers} játékos`;
+
+  const discordConfigured = Boolean(state.auth?.discordConfigured);
+  $$('.discord-status').forEach(node => {
+    node.textContent = discordConfigured ? 'ONLINE' : 'BEÁLLÍTÁS SZÜKSÉGES';
+    node.classList.toggle('offline', !discordConfigured);
+  });
 }
 
 async function loadUser() {
