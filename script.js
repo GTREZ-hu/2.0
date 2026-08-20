@@ -11,7 +11,7 @@ function toast(message) {
 }
 
 function navigate(route) {
-  if (route !== 'home' && !document.body.classList.contains('is-authenticated')) {
+  if (route === 'server' && !document.body.classList.contains('is-authenticated')) {
     toast('Ehhez előbb jelentkezz be Discorddal!');
     return;
   }

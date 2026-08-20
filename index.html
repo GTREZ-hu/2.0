@@ -24,9 +24,12 @@
     <nav id="mainNav">
       <button class="active" type="button" data-route="home" data-hud="HQ">Kezdőlap</button>
       <button class="auth-only" type="button" data-route="server" data-hud="CORE">Szerverállapot</button>
-      <a class="auth-only nav-panel-link" href="/user.html">Karakter</a>
+      <button type="button" data-route="map" data-hud="2D">2D térkép</button>
+      <a class="nav-panel-link" href="/community.html" data-hud="SOC">Közösség</a>
+      <a class="auth-only nav-panel-link" href="/user.html">Játékospanel</a>
       <a class="auth-only nav-panel-link" href="/map.html">3D térkép</a>
-      <a class="auth-only nav-panel-link" href="/user.html#adminPanel">Admin</a>
+      <a class="auth-only nav-panel-link" href="/character.html">Karakter</a>
+      <a class="auth-only nav-panel-link" href="/admin.html">Admin</a>
     </nav>
     <a class="btn btn-outline desktop-join" href="/auth/discord" id="discordLogin">Discord belépés</a>
   </header>
@@ -50,7 +53,8 @@
       <div class="section-title reveal visible"><span>ALPÁR RP</span><h2>Közvetlen szerverkapcsolat</h2><p>A játékosszám, a járművek és a térképi adatok közvetlenül a FiveM szerverről érkeznek.</p></div>
       <div class="features">
         <button class="feature reveal visible auth-only" data-route="server"><div class="icon green" data-glyph="SYS"></div><h3>Élő szerverállapot</h3><p>Aktuális játékosszám és bridge-kapcsolat.</p></button>
-        <a class="feature reveal visible auth-only" href="/map.html"><div class="icon blue" data-glyph="GPS"></div><h3>3D Alpár Atlas</h3><p>Interaktív Los Santos térkép belépett játékosoknak.</p></a>
+        <button class="feature reveal visible" data-route="map"><div class="icon blue" data-glyph="2D"></div><h3>2D Alpár Atlas</h3><p>Interaktív várostérkép minden látogatónak.</p></button>
+        <a class="feature reveal visible" href="/community.html"><div class="icon purple" data-glyph="SOC"></div><h3>Közösség</h3><p>Üzenőfal, üzenetek és városi galéria.</p></a>
         <a class="feature discord-feature reveal visible" href="/auth/discord"><div class="icon purple" data-glyph="DC"></div><h3>Discord-belépés <small class="discord-status">ELLENŐRZÉS</small></h3><p>A Discord hivatalos OAuth rendszerével.</p></a>
       </div>
     </section>
@@ -62,7 +66,7 @@
       </div>
     </section>
 
-    <section class="view full-map road-map-view auth-only" id="map">
+    <section class="view full-map road-map-view" id="map">
       <div class="road-map-shell glass" id="roadMapShell">
         <aside class="road-map-sidebar"><div class="road-map-brand"><span class="eyebrow">LIVE SERVER</span><h2>Alpár Atlas</h2><p>Az élő térkép betöltése…</p></div></aside>
         <div class="road-map-stage" id="atlas" role="application" aria-label="Alpár RP interaktív úthálózat" tabindex="0">

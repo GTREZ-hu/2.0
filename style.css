@@ -462,3 +462,5 @@ body.page-reveal .topbar,body.page-reveal .glass,body.page-reveal .community-ove
 }
 body:not(.is-authenticated) .auth-only { display: none !important; }
 .nav-panel-link { color: inherit; font: inherit; text-decoration: none; }
+/* The account dashboard only contains account modules; community, character and admin have dedicated pages. */
+.user-dashboard #messenger,.user-dashboard #feed,.user-dashboard #galleryPanel,.user-dashboard #characterPanel,.user-dashboard #adminPanel{display:none!important}

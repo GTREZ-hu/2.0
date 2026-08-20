@@ -914,8 +914,8 @@
     scene.add(routeGroup);
 
     const activateMap = (mode = 'lightweight') => {
-      setMarkers(demoMarkers);
-      startDemoSimulation();
+      clearMarkers();
+      clearZones();
       resetView();
       setProgress(100);
       setStatus(mode === 'full' ? 'RĂ©szletes 3D tĂ©rkĂ©p aktĂ­v' : 'OptimalizĂˇlt 3D tĂ©rkĂ©p aktĂ­v');
@@ -980,8 +980,8 @@
           }
         });
         scene.add(mapObject);
-        setMarkers(demoMarkers);
-        startDemoSimulation();
+        clearMarkers();
+        clearZones();
         resetView();
       });
     });
@@ -1018,12 +1018,6 @@
       setMarkers(normalized);
       setZones(zones);
     },
-    randomizeDemo: () => {
-      const demo = createDemoEntities();
-      setMarkers([].concat(demo.players, demo.items, demo.marks));
-      setZones(demo.zones);
-    },
-    stopDemo: stopDemoSimulation,
     focusToWorld,
     resetView,
     destroy,
@@ -1047,6 +1041,46 @@
     }
   };
 
+  const applyLiveMapState = state => {
+    if (!state || !markerGroup) return;
+    const players = Array.isArray(state.players) ? state.players.map(player => ({
+      ...player,
+      label: player.name || player.label || `Játékos ${player.serverId || ''}`.trim()
+    })) : [];
+    const vehicles = Array.isArray(state.vehicles) ? state.vehicles.map(vehicle => ({
+      ...vehicle,
+      type: 'vehicle',
+      label: vehicle.plate || vehicle.model || 'Jármű',
+      color: vehicle.color || '#f5c76b'
+    })) : [];
+    const blips = Array.isArray(state.blips) ? state.blips.map(blip => ({
+      ...blip,
+      type: 'blip',
+      label: blip.label || blip.name || 'Térképpont',
+      color: blip.color || '#ff3154'
+    })) : [];
+    window.Alpar3DMap.setEntities({ players, marks: vehicles.concat(blips) });
+    if (statusText) statusText.textContent = state.server && state.server.online
+      ? 'Élő szerveradatok'
+      : 'Nincs aktív szerverkapcsolat';
+  };
+
+  const connectLiveMap = async () => {
+    try {
+      const response = await fetch('/api/live-map', { cache: 'no-store' });
+      if (response.ok) applyLiveMapState(await response.json());
+    } catch (_) {
+      if (statusText) statusText.textContent = 'Élő adatok nem elérhetők';
+    }
+    if ('EventSource' in window) {
+      const events = new EventSource('/api/live-map/events');
+      events.addEventListener('map', event => {
+        try { applyLiveMapState(JSON.parse(event.data)); } catch (_) {}
+      });
+    }
+  };
+
+  window.addEventListener('alpar3d:ready', connectLiveMap, { once: true });
   init();
   bindMapInterface();
 })();
