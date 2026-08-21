@@ -7,22 +7,17 @@
   <link rel="icon" href="Logo.png" type="image/png" />
   <link rel="preconnect" href="https://wallpapers.com">
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Orbitron:wght@600;700;800;900&display=swap&subset=latin-ext" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
-  <link rel="stylesheet" href="style.css?v=portal-2" />
-  <link rel="stylesheet" href="account.css?v=portal-2" />
+  <link rel="stylesheet" href="style.css?v=red-command-10" />
+  <link rel="stylesheet" href="account.css?v=command-center-1" />
 </head>
-<body class="user-dashboard">
+<body class="account-page user-dashboard app-preparing">
   <div class="fx-atmosphere" aria-hidden="true"><i></i><i></i><i></i></div>
   <div class="fx-cursor" id="fxCursor" aria-hidden="true"></div>
-  <div class="site-loader" id="siteLoader" role="status" aria-live="polite">
-    <div class="loader-bg"></div>
-    <div class="loader-panel">
-      <img src="Logo.png" alt="Alpar RP logo" />
-      <span>ALPAR RP SYSTEM</span>
-      <strong>Betoltes</strong>
-      <div class="loader-bar"><i></i></div>
-    </div>
-  </div>
+  <div class="page-loader" id="siteLoader" role="status" aria-live="polite"><img src="Logo.png" alt="Alpár RP"><span>ALPÁR RP COMMAND</span><b>Rendszer betöltése</b><i></i></div>
   <div class="noise"></div>
   <div class="cursor-glow" id="cursorGlow"></div>
   <div class="ambient-bg" id="ambientBg" aria-hidden="true">
@@ -30,19 +25,19 @@
     <div class="ambient-bg-layer"></div>
   </div>
 
-  <header class="nav-shell">
-    <nav class="nav glass reveal visible">
-      <a href="index.html#home" class="brand"><img class="brand-mark" src="Logo.png" alt="Alpar RP logo" /><span>Alpár RP</span></a>
-      <div class="nav-links open-static">
-        <a href="index.html#home">Főoldal</a>
-        <a href="index.html#map">2D térkép</a>
-        <a href="map.html">3D térkép</a>
-        <a href="community.html">Közösség</a>
-        <a href="character.html">Karakter</a>
-        <a href="admin.html">Admin</a>
-        <button id="logoutButton" class="map-tool" type="button">Kilépés</button>
-      </div>
+  <header class="topbar account-topbar">
+    <a href="index.html#home" class="brand" aria-label="Alpár RP főoldal"><img src="Logo.png" alt="Alpár RP"><span>ALPÁR</span><small>RP</small></a>
+    <button class="menu-btn" id="menuBtn" type="button" aria-label="Menü" aria-expanded="false"><span></span><span></span><span></span></button>
+    <nav id="mainNav">
+      <a href="index.html#home" data-hud="HQ">Főoldal</a>
+      <a class="active" href="user.html" data-hud="PID" aria-current="page">Játékospanel</a>
+      <a href="character.html" data-hud="ID">Karakter</a>
+      <a href="community.html" data-hud="COMMS">Közösség</a>
+      <a href="index.html#map" data-hud="GPS">2D Atlas</a>
+      <a href="map.html" data-hud="3D">3D Atlas</a>
+      <a href="admin.html" data-hud="OS">Admin</a>
     </nav>
+    <button id="logoutButton" class="btn btn-outline desktop-join" type="button">Kilépés</button>
   </header>
 
   <main class="user-page">

@@ -1,6 +1,13 @@
 ﻿const menuBtn=document.getElementById('menuBtn');
-const navLinks=document.getElementById('navLinks');
+const navLinks=document.getElementById('mainNav') || document.getElementById('navLinks');
 const siteLoader=document.getElementById('siteLoader');
+if(document.body.classList.contains('account-page')){
+  try{
+    const settings=JSON.parse(localStorage.getItem('alpar-interface-settings') || '{}');
+    if(settings.motion) document.body.dataset.motion=settings.motion;
+  }catch(_){ }
+  document.querySelectorAll('.reveal.visible').forEach(el=>el.classList.remove('visible'));
+}
 if(window.location.protocol==='file:'){
   const fileName=window.location.pathname.split(/[\\/]/).pop() || 'index.html';
   const targetFile=fileName.toLowerCase()==='index.html' ? '' : fileName;
@@ -16,7 +23,9 @@ if(window.location.protocol==='file:'){
 if(siteLoader){
   const isMapPage=document.body.classList.contains('map-page');
   const hideLoader=()=>{
-    siteLoader.classList.add('is-hidden');
+    siteLoader.classList.add('is-hidden','hide');
+    document.body.classList.remove('app-preparing');
+    document.body.classList.add('app-ready');
     window.setTimeout(()=>siteLoader.remove(),900);
   };
   const minDelay=new Promise(resolve=>window.setTimeout(resolve,isMapPage?900:520));
@@ -38,10 +47,14 @@ if(siteLoader){
   Promise.all([minDelay,pageReady,mapReady]).then(hideLoader);
 }
 if(menuBtn && navLinks){
-  menuBtn.addEventListener('click',()=>navLinks.classList.toggle('open'));
+  menuBtn.addEventListener('click',()=>{
+    const open=navLinks.classList.toggle('open');
+    menuBtn.setAttribute('aria-expanded',String(open));
+  });
 }
-document.querySelectorAll('.nav-links a').forEach(a=>a.addEventListener('click',()=>{
+document.querySelectorAll('#mainNav a,.nav-links a').forEach(a=>a.addEventListener('click',()=>{
   if(navLinks) navLinks.classList.remove('open');
+  if(menuBtn) menuBtn.setAttribute('aria-expanded','false');
 }));
 
 const year=document.getElementById('year');
